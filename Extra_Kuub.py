@@ -165,8 +165,6 @@ if uploaded_file:
     # === Download flagged ===
     csv_flagged = df_flagged.to_csv(index=False).encode("utf-8")
 
-    st.markdown("## 📤 Download geflagde orders als Excel")
-
     if not df_flagged.empty:
         # We behouden de kolomvolgorde van de originele data
         originele_kolommen = list(df.columns)
