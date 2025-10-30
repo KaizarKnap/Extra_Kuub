@@ -15,6 +15,12 @@ Deze versie berekent het aantal extra bakken op basis van **Extra m³ / Volume p
 
 uploaded_file = st.file_uploader("📂 Upload je Excel-bestand", type=["xlsx"])
 
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("style.css")
+
 if uploaded_file:
     # --- Slimme Excel-lezer ---
     def read_excel_smart(uploaded_file):
