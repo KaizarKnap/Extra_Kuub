@@ -11,12 +11,24 @@ Analyseer automatisch extra afval per order en zie direct hoeveel **extra bakken
 Deze versie berekent het aantal extra bakken op basis van **Extra m³ / Volume per bak**.
 """)
 
-# --- Upload ---
 uploaded_file = st.file_uploader("📂 Upload je Excel-bestand", type=["xlsx"])
 
 if uploaded_file:
-    df = pd.read_excel(uploaded_file)
-    st.success(f"✅ Bestand geladen: {uploaded_file.name}")
+    # --- Slimme Excel-lezer ---
+    def read_excel_smart(uploaded_file):
+        temp_df = pd.read_excel(uploaded_file, header=None)
+        for i in range(len(temp_df)):
+            row_values = temp_df.iloc[i].astype(str).tolist()
+            if any(x in row_values for x in ["Ophaaldatum", "Locatienummer", "Klantnaam", "# uitgevoerd", "Extra m3"]):
+                df = pd.read_excel(uploaded_file, skiprows=i)
+                return df, i
+        # fallback: als er niets wordt gevonden
+        df = pd.read_excel(uploaded_file)
+        return df, 0
+
+    # --- Bestand inladen met automatische detectie ---
+    df, header_row = read_excel_smart(uploaded_file)
+    st.success(f"✅ Bestand geladen vanaf rij {header_row + 1}")
 
     # Controle op verplichte kolommen
     required_cols = ["Locatienummer", "Klantnaam", "Ophaaldatum", "Volume", "# uitgevoerd", "Extra m3"]
@@ -43,7 +55,7 @@ if uploaded_file:
             df[col] = clean_to_float(df[col])
 
     # --- Berekeningen ---
-    df["Volume_m3"] = df["Volume"] / 1000  # volume omzetten naar m³
+    df["Volume_m3"] = df["Volume"] / 1000  
     df["Extra_bakken"] = df["Extra m3"] / df["Volume_m3"]
     df["Extra_kuub"] = df["Extra m3"] + (df["Volume_m3"] * df["# uitgevoerd"])
 
