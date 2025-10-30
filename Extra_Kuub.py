@@ -2,7 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import io
+import locale
 
+locale.setlocale(locale.LC_TIME, 'nl_NL.UTF-8')
 st.set_page_config(page_title="Extra Afval Dashboard", layout="wide")
 
 st.title("🚛 Extra Afval Dashboard")
@@ -81,6 +83,7 @@ if uploaded_file:
         min_value=min_date,
         max_value=max_date,
     )
+    st.write(f"📅 Geselecteerde periode: {start_date.strftime('%d-%m-%Y')} t/m {end_date.strftime('%d-%m-%Y')}")
 
     # Filter toepassen
     df = df[(df["Ophaaldatum_dt"] >= pd.to_datetime(start_date)) & (df["Ophaaldatum_dt"] <= pd.to_datetime(end_date))]
