@@ -85,7 +85,13 @@ if uploaded_file:
     st.markdown("### 📅 Filter op periode")
 
     # Zorg dat 'Ophaaldatum' in datetime blijft voor filtering
-    df["Ophaaldatum_dt"] = pd.to_datetime(df["Ophaaldatum"], errors="coerce")
+    df["Ophaaldatum_dt"] = pd.to_datetime(df["Ophaaldatum"], errors="coerce", dayfirst=True)
+
+    # Formatteer in NL stijl: 31-10-2025
+    df["Ophaaldatum_nl"] = df["Ophaaldatum_dt"].dt.strftime("%d-%m-%Y")
+
+    # Optioneel: korte dagnaam erbij (do 31 okt)
+    df["Ophaaldatum_kort"] = df["Ophaaldatum_dt"].dt.strftime("%a %d %b %Y")
 
     min_date = df["Ophaaldatum_dt"].min()
     max_date = df["Ophaaldatum_dt"].max()
