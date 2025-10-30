@@ -82,15 +82,9 @@ if uploaded_file:
     min_extra_bakken = st.slider("Minimaal aantal extra bakken (boven gepland)", 0.0, 10.0, 2.0, 0.1)
     min_extra_kuub = st.slider("Minimaal totaal extra volume (m³)", 0.0, 10.0, 1.0, 0.1)
 
-    st.markdown("### 📅 Filter op periode")
-
     # Zorg dat 'Ophaaldatum' in datetime blijft voor filtering
     df["Ophaaldatum_dt"] = pd.to_datetime(df["Ophaaldatum"], errors="coerce", dayfirst=True)
-
-    # Formatteer in NL stijl: 31-10-2025
     df["Ophaaldatum_nl"] = df["Ophaaldatum_dt"].dt.strftime("%d-%m-%Y")
-
-    # Optioneel: korte dagnaam erbij (do 31 okt)
     df["Ophaaldatum_kort"] = df["Ophaaldatum_dt"].dt.strftime("%a %d %b %Y")
 
     min_date = df["Ophaaldatum_dt"].min()
@@ -117,10 +111,6 @@ if uploaded_file:
 
     # Daarna binnen die subset kijken naar extra bakken
     df_flagged = df_filtered_volume[df_filtered_volume["Extra_bakken"] > min_extra_bakken]
-
-
-    st.subheader(f"🚩 Geflagde orders (> {min_extra_bakken} extra bakken of > {min_extra_kuub} m³)")
-    st.dataframe(df_flagged)
 
     # === Dashboard Overzicht ===
     st.markdown("## 📈 Dashboard-overzicht")
@@ -164,8 +154,13 @@ if uploaded_file:
         st.dataframe(locatie)
         st.bar_chart(locatie["Aantal_orders"].head(10))
 
+
         csv = locatie.to_csv().encode("utf-8")
         st.download_button("📥 Download overzicht per locatie", csv, "overzicht_per_locatie.csv")
+    
+    #== Geflagde orders tonen ===
+    st.subheader(f"🚩 Geflagde orders (> {min_extra_bakken} extra bakken of > {min_extra_kuub} m³)")
+    st.dataframe(df_flagged)
 
     # === Download flagged ===
     csv_flagged = df_flagged.to_csv(index=False).encode("utf-8")
