@@ -26,12 +26,12 @@ button[kind="primary"] {
 }
 
 button[kind="primary"]:hover {
-    background-color: #0056b3 !important;
+    background-color: #15ad22 !important;
 }
 
 /* Metrics cards */
 [data-testid="stMetricValue"] {
-    color: #0066cc;
+    color: #11ac32;
     font-weight: bold;
 }
 
