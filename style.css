@@ -26,9 +26,9 @@ body {
 /* ========== BLOKKEN / CARDS ========== */
 
 .block-box {
-    background-color: #ffffff;
+    background-color: #ffffff00;
     border-radius: 14px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #e0e0e000;
     padding: 25px 30px;
     margin-bottom: 25px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -62,7 +62,7 @@ body {
 
 /* Verwijder blauwe rails */
 div[data-baseweb="slider"] > div {
-    background: #e0e0e0 !important;
+    background: #e0e0e000 !important;
 }
 
 /* Slider-handle modern maken */
@@ -74,7 +74,7 @@ div[data-baseweb="slider"] [role="slider"] {
 
 /* Label bij sliders */
 .stSlider label {
-    color: #2f3640;
+    color: #12df35;
     font-weight: 500;
     margin-bottom: 4px;
 }
