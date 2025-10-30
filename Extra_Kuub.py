@@ -4,7 +4,15 @@ import numpy as np
 import io
 import locale
 
-locale.setlocale(locale.LC_TIME, 'nl_NL.UTF-8')
+try:
+    locale.setlocale(locale.LC_TIME, 'nl_NL.UTF-8')
+except locale.Error:
+    try:
+        locale.setlocale(locale.LC_TIME, 'nl_NL')
+    except locale.Error:
+        # Fallback voor Streamlit Cloud
+        locale.setlocale(locale.LC_TIME, 'C')
+
 st.set_page_config(page_title="Extra Afval Dashboard", layout="wide")
 
 st.title("🚛 Extra Afval Dashboard")
@@ -46,7 +54,7 @@ if uploaded_file:
         st.stop()
 
     # --- Data voorbereiden ---
-    df["Ophaaldatum"] = pd.to_datetime(df["Ophaaldatum"], errors="coerce")
+    df["Ophaaldatum_dt"] = pd.to_datetime(df["Ophaaldatum"], errors="coerce", dayfirst=True)
     df["Ophaaldatum"] = df["Ophaaldatum"].dt.strftime("%d-%m-%Y")
 
 
