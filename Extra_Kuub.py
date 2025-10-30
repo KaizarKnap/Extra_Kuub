@@ -39,6 +39,8 @@ if uploaded_file:
 
     # --- Data voorbereiden ---
     df["Ophaaldatum"] = pd.to_datetime(df["Ophaaldatum"], errors="coerce")
+    df["Ophaaldatum"] = df["Ophaaldatum"].dt.strftime("%d-%m-%Y")
+
 
     def clean_to_float(series):
         return (
@@ -64,12 +66,35 @@ if uploaded_file:
     min_extra_bakken = st.slider("Minimaal aantal extra bakken (boven gepland)", 0.0, 10.0, 2.0, 0.1)
     min_extra_kuub = st.slider("Minimaal totaal extra volume (m³)", 0.0, 10.0, 1.0, 0.1)
 
+    st.markdown("### 📅 Filter op periode")
+
+    # Zorg dat 'Ophaaldatum' in datetime blijft voor filtering
+    df["Ophaaldatum_dt"] = pd.to_datetime(df["Ophaaldatum"], errors="coerce")
+
+    min_date = df["Ophaaldatum_dt"].min()
+    max_date = df["Ophaaldatum_dt"].max()
+
+    # Gebruiker kiest de periode
+    start_date, end_date = st.date_input(
+        "Kies een datumbereik",
+        value=(min_date, max_date),
+        min_value=min_date,
+        max_value=max_date,
+    )
+
+    # Filter toepassen
+    df = df[(df["Ophaaldatum_dt"] >= pd.to_datetime(start_date)) & (df["Ophaaldatum_dt"] <= pd.to_datetime(end_date))]
+
     # --- Dynamische filtering ---
     df["Extra_bakken"] = df["Extra m3"] / (df["Volume"] / 1000)
     df["Totaal_bakken"] = df["# uitgevoerd"] + df["Extra_bakken"]
 
-    # Alleen flaggen als er echt méér extra bakken zijn dan de drempel
-    df_flagged = df[df["Extra_bakken"] > min_extra_bakken]
+    # Eerst filteren op volume (alleen orders met veel extra kuub)
+    df_filtered_volume = df[df["Extra m3"] > min_extra_kuub]
+
+    # Daarna binnen die subset kijken naar extra bakken
+    df_flagged = df_filtered_volume[df_filtered_volume["Extra_bakken"] > min_extra_bakken]
+
 
     st.subheader(f"🚩 Geflagde orders (> {min_extra_bakken} extra bakken of > {min_extra_kuub} m³)")
     st.dataframe(df_flagged)
