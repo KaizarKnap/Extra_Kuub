@@ -19,7 +19,7 @@ h1, h2, h3 {
 
 /* Buttons in bedrijfskleur */
 button[kind="primary"] {
-    background-color: #007bff !important;
+    background-color: #007bff00 !important;
     color: white !important;
     border: none !important;
     border-radius: 6px !important;
@@ -37,7 +37,7 @@ button[kind="primary"]:hover {
 
 /* Sliderkleur */
 [data-testid="stSlider"] > div > div {
-    background: linear-gradient(90deg, #007bff 0%, #00c3ff 100%);
+    background: linear-gradient(90deg, #999 0%, #999 100%);
 }
 
 /* Datuminput en selecties */
